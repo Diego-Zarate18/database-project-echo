@@ -46,22 +46,22 @@ echo-backend/
     │
     ├── modules/                    # Módulos funcionales de la aplicación
     │   ├── auth/                   # Autenticación Local
-    │   │   ├── auth.controller.js  # Endpoints /api/v1/auth
+    │   │   ├── auth.controller.js  # Endpoints /api/auth
     │   │   ├── auth.routes.js      # Definición de rutas de autenticación
     │   │   └── auth.service.js     # Hash bcrypt, emisión de JWT y verificación de correo único
     │   │
     │   ├── courses/                # Cursos, Módulos y Lecciones
-    │   │   ├── course.controller.js# Endpoints /api/v1/courses
+    │   │   ├── course.controller.js# Endpoints /api/courses
     │   │   ├── course.routes.js    # Rutas de consulta de catálogo y lecciones (1 a 9)
     │   │   └── course.service.js  # Lógica de navegación del contenido
     │   │
     │   ├── evaluations/            # Evaluaciones Finales (Lección 10)
-    │   │   ├── eval.controller.js  # Endpoints /api/v1/evaluations
+    │   │   ├── eval.controller.js  # Endpoints /api/evaluations
     │   │   ├── eval.routes.js      # Rutas de envío y calificación de exámenes
     │   │   └── eval.service.js    # Calificación automática, reintentos inmediatos y regla del 70%
     │   │
     │   └── progress/               # Avance y Seguimiento Educativo
-    │       ├── progress.controller.js # Endpoints /api/v1/progress
+    │       ├── progress.controller.js # Endpoints /api/progress
     │       ├── progress.routes.js  # Rutas del panel "Mi Progreso"
     │       └── progress.service.js # Recálculo de avance (Lecciones leídas + Evaluaciones aprobadas)
     │
@@ -85,7 +85,7 @@ echo-backend/
 | Middleware | Ubicación | Responsabilidad Principal |
 | :--- | :--- | :--- |
 | **`security.middleware.js`** | `src/middlewares` | Aplica **Helmet.js** para ocultar cabeceras vulnerables (`X-Powered-By`) y configura **CORS** para restringir peticiones exclusivamente al dominio cliente autorizado de Echo. |
-| **`rateLimit.middleware.js`** | `src/middlewares` | Limita la tasa de peticiones por IP en las rutas de `/api/v1/auth/login` y `/api/v1/auth/register` para prevenir ataques de fuerza bruta. |
+| **`rateLimit.middleware.js`** | `src/middlewares` | Limita la tasa de peticiones por IP en las rutas de `/api/auth/login` y `/api/auth/register` para prevenir ataques de fuerza bruta. |
 | **`auth.middleware.js`** | `src/middlewares` | Valida la presencia y firma del token JWT en el encabezado `Authorization: Bearer <token>`, gestionando la sesión local del estudiante y la expiración por inactividad ($30\text{ min}$). |
 | **`validator.middleware.js`** | `src/middlewares` | Intercepta y sanitiza los datos de entrada en el cuerpo (`body`) o parámetros de la petición mediante esquemas estrictos (Zod / Joi) antes de llegar a los controladores. |
 | **`logger.middleware.js`** | `src/middlewares` | Mide el tiempo exacto de procesamiento de cada petición HTTP. Registra alertas si el tiempo de respuesta supera el umbral de latencia de $3\text{ segundos}$. |

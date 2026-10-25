@@ -87,22 +87,22 @@
       },
       "modules": {
         "auth": {
-          "auth.controller.js": "Endpoints /api/v1/auth (login, register)",
+          "auth.controller.js": "Endpoints /api/auth (login, register)",
           "auth.routes.js": "Rutas de autenticación local",
           "auth.service.js": "Lógica de credenciales, hash Bcrypt y generación de JWT"
         },
         "courses": {
-          "course.controller.js": "Endpoints /api/v1/courses (cursos, módulos, lecciones 1-9)",
+          "course.controller.js": "Endpoints /api/courses (cursos, módulos, lecciones 1-9)",
           "course.routes.js": "Rutas de catálogo de contenidos",
           "course.service.js": "Navegación del árbol de módulos y contenidos"
         },
         "evaluations": {
-          "eval.controller.js": "Endpoints /api/v1/evaluations (enviar examen, consultar reintentos)",
+          "eval.controller.js": "Endpoints /api/evaluations (enviar examen, consultar reintentos)",
           "eval.routes.js": "Rutas para la evaluación final (lección 10)",
           "eval.service.js": "Calificación automática, reintentos inmediatos y regla del 70%"
         },
         "progress": {
-          "progress.controller.js": "Endpoints /api/v1/progress (panel Mi Progreso)",
+          "progress.controller.js": "Endpoints /api/progress (panel Mi Progreso)",
           "progress.routes.js": "Rutas de avance del estudiante",
           "progress.service.js": "Cálculo de progreso general e historial"
         }
