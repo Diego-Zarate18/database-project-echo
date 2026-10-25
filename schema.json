@@ -1,0 +1,193 @@
+{
+  "proyecto": "Echo Backend",
+  "version": "2.0.0",
+  "arquitectura": "Monolito Modular por Capas (Clean Architecture)",
+  "entorno": {
+    "runtime": "Node.js (Express)",
+    "base_de_datos": "MongoDB (NoSQL Documental)",
+    "autenticacion": "JWT Local (Email y Contraseña cifrada con Bcrypt)"
+  },
+  "capas_sistema": [
+    {
+      "nombre": "Capa de Seguridad y Middlewares Globales",
+      "descripcion": "Protección perimetral de la API, sanitización de entradas, control de tasa de peticiones y gestión de sesiones con JWT.",
+      "componentes": [
+        "Helmet.js (Ocultación de cabeceras sensibles)",
+        "CORS (Restricción de orígenes autorizados al cliente Echo)",
+        "RateLimiter (Prevención de ataques de fuerza bruta en auth)",
+        "AuthMiddleware (Validación de token JWT y control de inactividad de 30 min)",
+        "ValidatorMiddleware (Sanitización y validación estricta de DTOs de entrada)",
+        "ErrorHandler (Manejo global unificado de excepciones JSON)"
+      ]
+    },
+    {
+      "nombre": "Capa de Presentación (HTTP / REST API)",
+      "descripcion": "Enrutamiento Express, controladores por módulo funcional y formateo de respuestas de la API.",
+      "componentes": [
+        "Routes (auth.routes, course.routes, eval.routes, progress.routes)",
+        "Validators / DTOs (Esquemas de validación con Zod / Joi)",
+        "Controllers (AuthController, CourseController, EvalController, ProgressController)"
+      ]
+    },
+    {
+      "nombre": "Capa de Dominio y Lógica de Negocio",
+      "descripcion": "Reglas de negocio puras (Autenticación local, navegación de lecciones 1-9, evaluación final en lección 10 con aprobación del 70% y reintentos inmediatos).",
+      "componentes": [
+        "AuthService (Hash Bcrypt, verificación de correo único, emisión de JWT)",
+        "CourseService (Navegación y consulta de árbol de módulos y lecciones)",
+        "EvalService (Calificación automática, reintentos inmediatos y regla de aprobación >= 70%)",
+        "ProgressService (Cálculo de porcentaje de avance por lecciones vistas + examen aprobado)"
+      ]
+    },
+    {
+      "nombre": "Capa de Infraestructura y Repositorios",
+      "descripcion": "Patrón de Repositorio para abstraer el acceso NoSQL a MongoDB del dominio de la aplicación.",
+      "componentes": [
+        "StudentRepository",
+        "CourseRepository",
+        "EvalAttemptRepository",
+        "ProgressLogRepository"
+      ]
+    },
+    {
+      "nombre": "Capa de Persistencia (MongoDB)",
+      "descripcion": "Almacenamiento NoSQL con esquemas validados y restricciones de unicidad.",
+      "componentes": [
+        "coleccion: estudiantes (Índice único en correo_electronico)",
+        "coleccion: cursos (Módulos con 10 lecciones; lección 10 = examen final)",
+        "coleccion: intentos_evaluacion (Historial de reintentos ilimitados)",
+        "coleccion: registro_avance (Traza de lecciones completadas y estado de aprobación)"
+      ]
+    },
+    {
+      "nombre": "Herramientas Operativas y Seeding",
+      "descripcion": "Scripts para la precarga del catálogo educativo y ejecución automatizada de pruebas.",
+      "componentes": [
+        "seed.js (Poblado automatizado de cursos y 10 lecciones)",
+        "reset_db.js (Limpieza de base de datos para pruebas)",
+        "Suite de Tests (Pruebas unitarias de aprobación y pruebas de integración REST)"
+      ]
+    }
+  ],
+  "estructura_archivos": {
+    "root": {
+      "config": {
+        "database.js": "Conexión a MongoDB mediante Mongoose",
+        "env.js": "Validación de variables de entorno con Zod",
+        "security.js": "Políticas de CORS y configuración de Helmet",
+        "logger.js": "Sistema de logs estructurado (Winston / Pino)"
+      },
+      "middlewares": {
+        "auth.middleware.js": "Verificación del token JWT y sesión de 30 min",
+        "error.middleware.js": "Formateador global de respuestas de error JSON",
+        "rateLimit.middleware.js": "Protección antibruteforce en registro y login",
+        "security.middleware.js": "Sanitización de cabeceras y prevención de inyecciones NoSQL",
+        "validator.middleware.js": "Validación sintáctica del body y params de la petición",
+        "logger.middleware.js": "Métrica de latencia HTTP (< 3s)"
+      },
+      "modules": {
+        "auth": {
+          "auth.controller.js": "Endpoints /api/v1/auth (login, register)",
+          "auth.routes.js": "Rutas de autenticación local",
+          "auth.service.js": "Lógica de credenciales, hash Bcrypt y generación de JWT"
+        },
+        "courses": {
+          "course.controller.js": "Endpoints /api/v1/courses (cursos, módulos, lecciones 1-9)",
+          "course.routes.js": "Rutas de catálogo de contenidos",
+          "course.service.js": "Navegación del árbol de módulos y contenidos"
+        },
+        "evaluations": {
+          "eval.controller.js": "Endpoints /api/v1/evaluations (enviar examen, consultar reintentos)",
+          "eval.routes.js": "Rutas para la evaluación final (lección 10)",
+          "eval.service.js": "Calificación automática, reintentos inmediatos y regla del 70%"
+        },
+        "progress": {
+          "progress.controller.js": "Endpoints /api/v1/progress (panel Mi Progreso)",
+          "progress.routes.js": "Rutas de avance del estudiante",
+          "progress.service.js": "Cálculo de progreso general e historial"
+        }
+      },
+      "repositories": {
+        "student.repository.js": "Operaciones NoSQL para la colección estudiantes",
+        "course.repository.js": "Operaciones NoSQL para la colección cursos",
+        "evalAttempt.repository.js": "Operaciones NoSQL para intentos_evaluacion",
+        "progressLog.repository.js": "Operaciones NoSQL para registro_avance"
+      },
+      "models": {
+        "student.model.js": "Schema Mongoose: estudiantes (correo_electronico único)",
+        "course.model.js": "Schema Mongoose: cursos (módulos de 10 lecciones)",
+        "evalAttempt.model.js": "Schema Mongoose: intentos_evaluacion",
+        "progressLog.model.js": "Schema Mongoose: registro_avance"
+      },
+      "scripts": {
+        "seed.js": "Carga inicial del catálogo de cursos en MongoDB",
+        "reset_db.js": "Reinicio de base de datos para pruebas"
+      },
+      "tests": {
+        "unit": "Pruebas unitarias (algoritmo del 70% de aprobación, hashing)",
+        "integration": "Pruebas de endpoints REST (respuestas 2xx/4xx/5xx)"
+      }
+    }
+  },
+  "grafo_flujos": {
+    "nodos": [
+      { "id": "ui", "nombre": "Frontend (Cliente Web Echo)", "tipo": "Cliente" },
+      { "id": "rate_limiter", "nombre": "RateLimiter & Helmet MW", "tipo": "Seguridad" },
+      { "id": "auth_mw", "nombre": "AuthMiddleware (JWT / 30m)", "tipo": "Seguridad" },
+      { "id": "validator_mw", "nombre": "ValidatorMiddleware (DTOs)", "tipo": "Seguridad" },
+      { "id": "controllers", "nombre": "Modulo Controllers (HTTP)", "tipo": "Presentacion" },
+      { "id": "auth_service", "nombre": "AuthService", "tipo": "Dominio" },
+      { "id": "course_service", "nombre": "CourseService", "tipo": "Dominio" },
+      { "id": "eval_service", "nombre": "EvalService (Regla 70%)", "tipo": "Dominio" },
+      { "id": "progress_service", "nombre": "ProgressService", "tipo": "Dominio" },
+      { "id": "student_repo", "nombre": "StudentRepository", "tipo": "Infraestructura" },
+      { "id": "course_repo", "nombre": "CourseRepository", "tipo": "Infraestructura" },
+      { "id": "eval_repo", "nombre": "EvalAttemptRepository", "tipo": "Infraestructura" },
+      { "id": "progress_repo", "nombre": "ProgressLogRepository", "tipo": "Infraestructura" },
+      { "id": "db_estudiantes", "nombre": "Colección: estudiantes", "tipo": "BaseDeDatos" },
+      { "id": "db_cursos", "nombre": "Colección: cursos", "tipo": "BaseDeDatos" },
+      { "id": "db_intentos", "nombre": "Colección: intentos_evaluacion", "tipo": "BaseDeDatos" },
+      { "id": "db_avance", "nombre": "Colección: registro_avance", "tipo": "BaseDeDatos" },
+      { "id": "seed_script", "nombre": "Script seed.js (Carga de cursos)", "tipo": "Operativo" }
+    ],
+    "conexiones": [
+      { "origen": "ui", "destino": "rate_limiter", "protocolo": "HTTPS / JSON REST" },
+      { "origen": "rate_limiter", "destino": "auth_mw", "descripcion": "Petición filtrada contra abusos" },
+      { "origen": "auth_mw", "destino": "validator_mw", "descripcion": "Verificación de token JWT activo" },
+      { "origen": "validator_mw", "destino": "controllers", "descripcion": "Petición validada enviada al controlador" },
+      { "origen": "controllers", "destino": "auth_service", "descripcion": "Registro y Login con autenticación local" },
+      { "origen": "controllers", "destino": "course_service", "descripcion": "Consulta de lecciones 1 a 9" },
+      { "origen": "controllers", "destino": "eval_service", "descripcion": "Envío y calificación de evaluación final (lección 10)" },
+      { "origen": "controllers", "destino": "progress_service", "descripcion": "Consulta y recálculo de porcentaje de avance" },
+      { "origen": "auth_service", "destino": "student_repo", "descripcion": "Lectura e inserción en la colección estudiantes" },
+      { "origen": "course_service", "destino": "course_repo", "descripcion": "Consulta de la estructura de cursos y módulos" },
+      { "origen": "eval_service", "destino": "eval_repo", "descripcion": "Registro del intento (reintentos inmediatos permitidos)" },
+      { "origen": "eval_service", "destino": "progress_repo", "descripcion": "Actualización del estado de aprobación si nota >= 70%" },
+      { "origen": "progress_service", "destino": "progress_repo", "descripcion": "Lectura de eventos para cálculo de avance general" },
+      { "origen": "progress_service", "destino": "student_repo", "descripcion": "Actualización del resumen en perfil del estudiante" },
+      { "origen": "student_repo", "destino": "db_estudiantes", "descripcion": "I/O NoSQL en MongoDB: estudiantes" },
+      { "origen": "course_repo", "destino": "db_cursos", "descripcion": "I/O NoSQL en MongoDB: cursos" },
+      { "origen": "eval_repo", "destino": "db_intentos", "descripcion": "I/O NoSQL en MongoDB: intentos_evaluacion" },
+      { "origen": "progress_repo", "destino": "db_avance", "descripcion": "I/O NoSQL en MongoDB: registro_avance" },
+      { "origen": "seed_script", "destino": "db_cursos", "descripcion": "Carga inicial de cursos con 10 lecciones" }
+    ]
+  },
+  "agentes_ia": [
+    {
+      "rol": "Agente Arquitecto Backend",
+      "enfoque": "Garantizar la modularidad, separación por capas y mantenimiento del código."
+    },
+    {
+      "rol": "Agente Ciberseguridad & Autenticación",
+      "enfoque": "Proteger los endpoints, validar el estándar JWT local, hashing bcrypt y aplicar límites de tasa."
+    },
+    {
+      "rol": "Agente Base de Datos & Persistencia",
+      "enfoque": "Optimizar consultas NoSQL en MongoDB, mantener esquemas Mongoose y verificar el índice único en correo_electronico."
+    },
+    {
+      "rol": "Agente QA & Testing",
+      "enfoque": "Garantizar la cobertura de pruebas unitarias e integración para la regla de aprobación (>= 70%) y reintentos inmediatos."
+    }
+  ]
+}
