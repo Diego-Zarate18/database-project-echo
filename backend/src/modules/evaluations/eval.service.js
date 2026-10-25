@@ -50,21 +50,21 @@ class EvalService {
     }
 
     // 2. Obtener el módulo
-    const modulo = curso.modulos.find((m) => m.numero_modulo === numeroModulo);
+    const modulo = curso.modules.find((m) => m.module_number === numeroModulo);
     if (!modulo) {
       throw new AppError('Módulo no encontrado.', 404);
     }
 
     // 3. Obtener la lección 10 (evaluación final)
-    const leccion10 = modulo.lecciones.find(
-      (l) => l.numero_leccion === 10 && l.tipo === 'evaluacion'
+    const leccion10 = modulo.lessons.find(
+      (l) => l.lesson_number === 10 && l.type === 'evaluation'
     );
-    if (!leccion10 || !leccion10.preguntas || leccion10.preguntas.length === 0) {
+    if (!leccion10 || !leccion10.questions || leccion10.questions.length === 0) {
       throw new AppError('La evaluación final de este módulo no está configurada.', 404);
     }
 
     // 4. Obtener la clave oficial
-    const claveOficial = leccion10.preguntas;
+    const claveOficial = leccion10.questions;
 
     // 5. Calificar las respuestas
     const resultado = this.gradeAnswers(respuestas, claveOficial);
@@ -78,32 +78,36 @@ class EvalService {
 
     // 7. Guardar el intento
     const intento = await this.evalAttemptRepo.create({
-      estudiante_id: estudianteId,
-      curso_id: cursoId,
-      numero_modulo: numeroModulo,
-      respuestas: resultado.detalle,
-      nota: resultado.nota,
-      aprobado: resultado.aprobado,
-      numero_intento: intentosPrevios + 1,
+      student_id: estudianteId,
+      course_id: cursoId,
+      module_number: numeroModulo,
+      answers: resultado.detalle,
+      score: resultado.nota,
+      passed: resultado.aprobado,
+      attempt_number: intentosPrevios + 1,
     });
 
     // 8. Si aprobó, actualizar el registro de avance
     if (resultado.aprobado) {
       await this.progressLogRepo.upsert(estudianteId, cursoId, numeroModulo, {
-        aprobado: true,
-        nota_aprobacion: resultado.nota,
-        fecha_aprobacion: new Date(),
+        passed: true,
+        passing_score: resultado.nota,
+        passed_at: new Date(),
       });
     }
 
     return {
       intento_id: intento._id,
-      numero_intento: intento.numero_intento,
+      numero_intento: intento.attempt_number,
       nota: resultado.nota,
       aprobado: resultado.aprobado,
       total_preguntas: claveOficial.length,
       respuestas_correctas: resultado.correctas,
-      detalle: resultado.detalle,
+      detalle: resultado.detalle.map((answer) => ({
+        preguntaId: answer.question_id,
+        respuesta_estudiante: answer.student_answer,
+        es_correcta: answer.is_correct,
+      })),
     };
   }
 
@@ -131,17 +135,17 @@ class EvalService {
     const detalle = [];
 
     for (const pregunta of claveOficial) {
-      const respuestaEstudiante = respuestasMap.get(pregunta.preguntaId) || null;
-      const esCorrecta = respuestaEstudiante === pregunta.respuesta_correcta;
+      const respuestaEstudiante = respuestasMap.get(pregunta.question_id) || null;
+      const esCorrecta = respuestaEstudiante === pregunta.correct_answer;
 
       if (esCorrecta) {
         correctas++;
       }
 
       detalle.push({
-        preguntaId: pregunta.preguntaId,
-        respuesta_estudiante: respuestaEstudiante,
-        es_correcta: esCorrecta,
+        question_id: pregunta.question_id,
+        student_answer: respuestaEstudiante,
+        is_correct: esCorrecta,
       });
     }
 

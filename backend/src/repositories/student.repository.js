@@ -23,7 +23,7 @@ const studentRepository = {
    * @returns {Promise<Object|null>}
    */
   async findByEmail(correo) {
-    return Student.findOne({ correo_electronico: correo });
+    return Student.findOne({ email: correo });
   },
 
   /**

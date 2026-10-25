@@ -24,12 +24,12 @@ const generateTestToken = (payload = { id: '507f1f77bcf86cd799439011', correo: '
 // ─────────────────────────────────────────────
 // SUITE DE PRUEBAS DE INTEGRACIÓN
 // ─────────────────────────────────────────────
-describe('API de Evaluaciones — POST /api/v1/evaluaciones/responder', () => {
+describe('API de Evaluaciones — POST /api/evaluaciones/responder', () => {
   // ─── TA-01: Error 401 si no hay token JWT ───
   describe('TA-01: Autenticación requerida', () => {
     it('debe retornar 401 si no se envía el header Authorization', async () => {
       const response = await request(app)
-        .post('/api/v1/evaluaciones/responder')
+        .post('/api/evaluaciones/responder')
         .send({
           cursoId: '507f1f77bcf86cd799439011',
           numeroModulo: 1,
@@ -43,7 +43,7 @@ describe('API de Evaluaciones — POST /api/v1/evaluaciones/responder', () => {
 
     it('debe retornar 401 si el token es inválido', async () => {
       const response = await request(app)
-        .post('/api/v1/evaluaciones/responder')
+        .post('/api/evaluaciones/responder')
         .set('Authorization', 'Bearer token-invalido-12345')
         .send({
           cursoId: '507f1f77bcf86cd799439011',
@@ -58,7 +58,7 @@ describe('API de Evaluaciones — POST /api/v1/evaluaciones/responder', () => {
     it('debe retornar 401 si el formato del header es incorrecto (sin Bearer)', async () => {
       const token = generateTestToken();
       const response = await request(app)
-        .post('/api/v1/evaluaciones/responder')
+        .post('/api/evaluaciones/responder')
         .set('Authorization', token) // Sin prefijo "Bearer "
         .send({
           cursoId: '507f1f77bcf86cd799439011',
@@ -77,7 +77,7 @@ describe('API de Evaluaciones — POST /api/v1/evaluaciones/responder', () => {
       const token = generateTestToken();
 
       const response = await request(app)
-        .post('/api/v1/evaluaciones/responder')
+        .post('/api/evaluaciones/responder')
         .set('Authorization', `Bearer ${token}`)
         .send({
           cursoId: '507f1f77bcf86cd799439011',
@@ -94,7 +94,7 @@ describe('API de Evaluaciones — POST /api/v1/evaluaciones/responder', () => {
       const token = generateTestToken();
 
       const response = await request(app)
-        .post('/api/v1/evaluaciones/responder')
+        .post('/api/evaluaciones/responder')
         .set('Authorization', `Bearer ${token}`)
         .send({
           numeroModulo: 1,
@@ -109,7 +109,7 @@ describe('API de Evaluaciones — POST /api/v1/evaluaciones/responder', () => {
       const token = generateTestToken();
 
       const response = await request(app)
-        .post('/api/v1/evaluaciones/responder')
+        .post('/api/evaluaciones/responder')
         .set('Authorization', `Bearer ${token}`)
         .send({});
 
@@ -121,7 +121,7 @@ describe('API de Evaluaciones — POST /api/v1/evaluaciones/responder', () => {
       const token = generateTestToken();
 
       const response = await request(app)
-        .post('/api/v1/evaluaciones/responder')
+        .post('/api/evaluaciones/responder')
         .set('Authorization', `Bearer ${token}`)
         .send({
           cursoId: 'no-es-un-objectid',
@@ -136,8 +136,8 @@ describe('API de Evaluaciones — POST /api/v1/evaluaciones/responder', () => {
 
   // ─── Ruta de salud ───
   describe('Health Check', () => {
-    it('GET /api/v1/health debe retornar 200 ok', async () => {
-      const response = await request(app).get('/api/v1/health');
+    it('GET /api/health debe retornar 200 ok', async () => {
+      const response = await request(app).get('/api/health');
 
       expect(response.status).toBe(200);
       expect(response.body.ok).toBe(true);

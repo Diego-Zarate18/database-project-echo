@@ -4,7 +4,7 @@
 const authService = require('./auth.service');
 
 /**
- * POST /api/v1/auth/register
+ * POST /api/auth/register
  */
 const register = async (req, res, next) => {
   try {
@@ -22,7 +22,7 @@ const register = async (req, res, next) => {
 };
 
 /**
- * POST /api/v1/auth/login
+ * POST /api/auth/login
  */
 const login = async (req, res, next) => {
   try {

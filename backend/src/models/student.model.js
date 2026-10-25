@@ -13,34 +13,33 @@ const mongoose = require('mongoose');
  */
 const studentSchema = new mongoose.Schema(
   {
-    nombre: {
+    name: {
       type: String,
       required: [true, 'El nombre es obligatorio'],
       trim: true,
       minlength: [2, 'El nombre debe tener al menos 2 caracteres'],
       maxlength: [100, 'El nombre no puede exceder los 100 caracteres'],
     },
-    correo_electronico: {
+    email: {
       type: String,
       required: [true, 'El correo electrónico es obligatorio'],
-      unique: true,
       lowercase: true,
       trim: true,
       match: [/^\S+@\S+\.\S+$/, 'Formato de correo electrónico inválido'],
     },
-    contrasena_hash: {
+    password_hash: {
       type: String,
       required: [true, 'La contraseña es obligatoria'],
     },
   },
   {
     timestamps: true,
-    collection: 'estudiantes',
+    collection: 'students',
   }
 );
 
 // Índice único explícito en correo_electronico
-studentSchema.index({ correo_electronico: 1 }, { unique: true });
+studentSchema.index({ email: 1 }, { unique: true });
 
 const Student = mongoose.model('Student', studentSchema);
 

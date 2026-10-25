@@ -10,7 +10,7 @@ const { validate } = require('../../middlewares/validator.middleware');
 const router = Router();
 
 /**
- * Esquema Zod para validar el body de POST /api/v1/evaluaciones/responder
+ * Esquema Zod para validar el body de POST /api/evaluaciones/responder
  *
  * - cursoId: ID válido de MongoDB (24 caracteres hex).
  * - numeroModulo: Entero positivo >= 1.
@@ -35,7 +35,7 @@ const submitEvalSchema = z.object({
 });
 
 /**
- * POST /api/v1/evaluaciones/responder
+ * POST /api/evaluaciones/responder
  *
  * Pipeline de middlewares:
  * 1. authMiddleware — Verifica JWT válido

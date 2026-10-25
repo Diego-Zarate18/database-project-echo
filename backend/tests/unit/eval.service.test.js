@@ -9,7 +9,7 @@ const EvalService = require('../../src/modules/evaluations/eval.service');
  */
 const createMockRepos = (overrides = {}) => ({
   evalAttemptRepository: {
-    create: jest.fn().mockResolvedValue({ _id: 'mock-attempt-id', numero_intento: 1 }),
+    create: jest.fn().mockResolvedValue({ _id: 'mock-attempt-id', attempt_number: 1 }),
     countAttempts: jest.fn().mockResolvedValue(0),
     findByStudentAndModule: jest.fn().mockResolvedValue([]),
     ...overrides.evalAttemptRepository,
@@ -38,10 +38,10 @@ const createMockCourse = (totalPreguntas = 10) => {
 
   for (let i = 1; i <= totalPreguntas; i++) {
     preguntas.push({
-      preguntaId: `p${i}`,
-      enunciado: `Pregunta ${i}`,
-      opciones,
-      respuesta_correcta: opciones[(i - 1) % opciones.length],
+      question_id: `p${i}`,
+      prompt: `Question ${i}`,
+      options: opciones,
+      correct_answer: opciones[(i - 1) % opciones.length],
     });
   }
 
@@ -49,30 +49,30 @@ const createMockCourse = (totalPreguntas = 10) => {
   const lecciones = [];
   for (let i = 1; i <= 9; i++) {
     lecciones.push({
-      numero_leccion: i,
-      titulo: `Lección ${i}`,
-      tipo: 'lectura',
-      contenido: `Contenido de la lección ${i}`,
-      preguntas: [],
+      lesson_number: i,
+      title: `Lesson ${i}`,
+      type: 'reading',
+      content: `Lesson ${i} content`,
+      questions: [],
     });
   }
   lecciones.push({
-    numero_leccion: 10,
-    titulo: 'Evaluación Final',
-    tipo: 'evaluacion',
-    contenido: '',
-    preguntas,
+    lesson_number: 10,
+    title: 'Final Evaluation',
+    type: 'evaluation',
+    content: '',
+    questions: preguntas,
   });
 
   return {
     _id: 'course-id-123456789012',
-    titulo: 'Curso de Prueba',
-    modulos: [
+    title: 'Test Course',
+    modules: [
       {
-        numero_modulo: 1,
-        titulo: 'Módulo 1',
-        descripcion: 'Módulo de prueba',
-        lecciones,
+        module_number: 1,
+        title: 'Module 1',
+        description: 'Test module',
+        lessons: lecciones,
       },
     ],
   };
@@ -144,8 +144,8 @@ describe('EvalService — Calificación de Evaluación Final (CU-03)', () => {
         'course-id-123456789012',
         1,
         expect.objectContaining({
-          aprobado: true,
-          nota_aprobacion: 70,
+          passed: true,
+          passing_score: 70,
         })
       );
     });
@@ -222,7 +222,7 @@ describe('EvalService — Calificación de Evaluación Final (CU-03)', () => {
         },
         evalAttemptRepository: {
           countAttempts: jest.fn().mockResolvedValue(2),
-          create: jest.fn().mockResolvedValue({ _id: 'attempt-3', numero_intento: 3 }),
+          create: jest.fn().mockResolvedValue({ _id: 'attempt-3', attempt_number: 3 }),
         },
       });
       const service = new EvalService(repos);
@@ -241,7 +241,7 @@ describe('EvalService — Calificación de Evaluación Final (CU-03)', () => {
 
       // Reintento inmediato: aprueba con 80%
       repos.evalAttemptRepository.countAttempts.mockResolvedValue(3);
-      repos.evalAttemptRepository.create.mockResolvedValue({ _id: 'attempt-4', numero_intento: 4 });
+      repos.evalAttemptRepository.create.mockResolvedValue({ _id: 'attempt-4', attempt_number: 4 });
 
       const respuestasAprobadas = generateStudentAnswers(10, 8);
       const resultado2 = await service.submitEvaluation({
@@ -268,8 +268,8 @@ describe('EvalService — Calificación de Evaluación Final (CU-03)', () => {
       const service = new EvalService(createMockRepos());
 
       const claveOficial = [
-        { preguntaId: 'p1', respuesta_correcta: 'A' },
-        { preguntaId: 'p2', respuesta_correcta: 'B' },
+        { question_id: 'p1', correct_answer: 'A' },
+        { question_id: 'p2', correct_answer: 'B' },
       ];
 
       // El estudiante envía dos respuestas para p1: primero 'C' (incorrecta), luego 'A' (correcta)

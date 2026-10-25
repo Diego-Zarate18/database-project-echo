@@ -22,11 +22,11 @@ const generarLecciones = (moduloTitulo) => {
   // Lecciones 1 a 9: lectura
   for (let i = 1; i <= 9; i++) {
     lecciones.push({
-      numero_leccion: i,
-      titulo: `Leccion ${i}: ${moduloTitulo}`,
-      tipo: 'lectura',
-      contenido: `Contenido de estudio para la leccion ${i} del modulo "${moduloTitulo}". Aqui el estudiante lee el material antes de presentar el examen final.`,
-      preguntas: [],
+      lesson_number: i,
+      title: `Lesson ${i}: ${moduloTitulo}`,
+      type: 'reading',
+      content: `Study content for lesson ${i} of module "${moduloTitulo}".`,
+      questions: [],
     });
   }
 
@@ -35,24 +35,24 @@ const generarLecciones = (moduloTitulo) => {
   const preguntas = [];
   for (let i = 1; i <= 10; i++) {
     preguntas.push({
-      preguntaId: `p${i}`,
-      enunciado: `Pregunta ${i} sobre ${moduloTitulo}: Seleccione la respuesta correcta.`,
-      opciones: [
-        `A) Opcion A de la pregunta ${i}`,
-        `B) Opcion B de la pregunta ${i}`,
-        `C) Opcion C de la pregunta ${i}`,
-        `D) Opcion D de la pregunta ${i}`,
+      question_id: `p${i}`,
+      prompt: `Question ${i} about ${moduloTitulo}: Select the correct answer.`,
+      options: [
+        `A) Option A for question ${i}`,
+        `B) Option B for question ${i}`,
+        `C) Option C for question ${i}`,
+        `D) Option D for question ${i}`,
       ],
-      respuesta_correcta: opciones[(i - 1) % 4], // A, B, C, D, A, B, C, D, A, B
+      correct_answer: opciones[(i - 1) % 4],
     });
   }
 
   lecciones.push({
-    numero_leccion: 10,
-    titulo: `Evaluacion Final: ${moduloTitulo}`,
-    tipo: 'evaluacion',
-    contenido: '',
-    preguntas,
+    lesson_number: 10,
+    title: `Final Evaluation: ${moduloTitulo}`,
+    type: 'evaluation',
+    content: '',
+    questions: preguntas,
   });
 
   return lecciones;
@@ -73,43 +73,43 @@ const seed = async () => {
     // ─── Crear curso de ejemplo ───
     console.log('Creando curso de ejemplo...');
     const curso = await Course.create({
-      titulo: 'Fundamentos de Bases de Datos',
-      descripcion: 'Curso introductorio sobre bases de datos relacionales y NoSQL. Incluye teoria y practica con MongoDB.',
-      modulos: [
+      title: 'Database Fundamentals',
+      description: 'Introductory course on relational and NoSQL databases, including MongoDB practice.',
+      modules: [
         {
-          numero_modulo: 1,
-          titulo: 'Introduccion a Bases de Datos',
-          descripcion: 'Conceptos fundamentales: que es una BD, tipos, modelos de datos.',
-          lecciones: generarLecciones('Introduccion a Bases de Datos'),
+          module_number: 1,
+          title: 'Introduction to Databases',
+          description: 'Fundamental concepts: databases, types, and data models.',
+          lessons: generarLecciones('Introduction to Databases'),
         },
         {
-          numero_modulo: 2,
-          titulo: 'Modelo Relacional y SQL',
-          descripcion: 'Tablas, claves primarias, relaciones y consultas SQL basicas.',
-          lecciones: generarLecciones('Modelo Relacional y SQL'),
+          module_number: 2,
+          title: 'Relational Model and SQL',
+          description: 'Tables, primary keys, relationships, and basic SQL queries.',
+          lessons: generarLecciones('Relational Model and SQL'),
         },
         {
-          numero_modulo: 3,
-          titulo: 'Bases de Datos NoSQL y MongoDB',
-          descripcion: 'Documentos, colecciones, CRUD en MongoDB y diseno de esquemas.',
-          lecciones: generarLecciones('Bases de Datos NoSQL y MongoDB'),
+          module_number: 3,
+          title: 'NoSQL Databases and MongoDB',
+          description: 'Documents, collections, CRUD in MongoDB, and schema design.',
+          lessons: generarLecciones('NoSQL Databases and MongoDB'),
         },
       ],
     });
 
-    console.log(`Curso creado: "${curso.titulo}" (ID: ${curso._id})`);
-    console.log(`  - ${curso.modulos.length} modulos, cada uno con 10 lecciones`);
+    console.log(`Course created: "${curso.title}" (ID: ${curso._id})`);
+    console.log(`  - ${curso.modules.length} modules, each with 10 lessons`);
 
     // ─── Crear estudiante de prueba ───
     console.log('\nCreando estudiante de prueba...');
     const contrasenaHash = await bcrypt.hash('password123', 10);
     const estudiante = await Student.create({
-      nombre: 'Diego Zarate',
-      correo_electronico: 'diego@echo.com',
-      contrasena_hash: contrasenaHash,
+      name: 'Diego Zarate',
+      email: 'diego@echo.com',
+      password_hash: contrasenaHash,
     });
 
-    console.log(`Estudiante creado: "${estudiante.nombre}" (ID: ${estudiante._id})`);
+    console.log(`Student created: "${estudiante.name}" (ID: ${estudiante._id})`);
 
     // ─── Resumen ───
     console.log('\n========================================');

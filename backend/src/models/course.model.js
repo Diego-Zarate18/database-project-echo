@@ -9,19 +9,19 @@ const mongoose = require('mongoose');
  */
 const questionSchema = new mongoose.Schema(
   {
-    preguntaId: {
+    question_id: {
       type: String,
       required: true,
     },
-    enunciado: {
+    prompt: {
       type: String,
       required: true,
     },
-    opciones: {
+    options: {
       type: [String],
       required: true,
     },
-    respuesta_correcta: {
+    correct_answer: {
       type: String,
       required: true,
     },
@@ -36,26 +36,26 @@ const questionSchema = new mongoose.Schema(
  */
 const lessonSchema = new mongoose.Schema(
   {
-    numero_leccion: {
+    lesson_number: {
       type: Number,
       required: true,
       min: 1,
       max: 10,
     },
-    titulo: {
+    title: {
       type: String,
       required: true,
     },
-    tipo: {
+    type: {
       type: String,
-      enum: ['lectura', 'evaluacion'],
+      enum: ['reading', 'evaluation'],
       required: true,
     },
-    contenido: {
+    content: {
       type: String,
       default: '',
     },
-    preguntas: {
+    questions: {
       type: [questionSchema],
       default: [],
     },
@@ -69,19 +69,19 @@ const lessonSchema = new mongoose.Schema(
  */
 const moduleSchema = new mongoose.Schema(
   {
-    numero_modulo: {
+    module_number: {
       type: Number,
       required: true,
     },
-    titulo: {
+    title: {
       type: String,
       required: true,
     },
-    descripcion: {
+    description: {
       type: String,
       default: '',
     },
-    lecciones: {
+    lessons: {
       type: [lessonSchema],
       validate: {
         validator: function (v) {
@@ -100,23 +100,23 @@ const moduleSchema = new mongoose.Schema(
  */
 const courseSchema = new mongoose.Schema(
   {
-    titulo: {
+    title: {
       type: String,
       required: [true, 'El título del curso es obligatorio'],
       trim: true,
     },
-    descripcion: {
+    description: {
       type: String,
       default: '',
     },
-    modulos: {
+    modules: {
       type: [moduleSchema],
       required: true,
     },
   },
   {
     timestamps: true,
-    collection: 'cursos',
+    collection: 'courses',
   }
 );
 

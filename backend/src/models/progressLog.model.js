@@ -11,42 +11,42 @@ const mongoose = require('mongoose');
  */
 const progressLogSchema = new mongoose.Schema(
   {
-    estudiante_id: {
+    student_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student',
       required: true,
     },
-    curso_id: {
+    course_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Course',
       required: true,
     },
-    numero_modulo: {
+    module_number: {
       type: Number,
       required: true,
     },
-    aprobado: {
+    passed: {
       type: Boolean,
       default: false,
     },
-    nota_aprobacion: {
+    passing_score: {
       type: Number,
       default: null,
     },
-    fecha_aprobacion: {
+    passed_at: {
       type: Date,
       default: null,
     },
   },
   {
     timestamps: true,
-    collection: 'registro_avance',
+    collection: 'progress_logs',
   }
 );
 
 // Índice único compuesto: un registro por estudiante + curso + módulo
 progressLogSchema.index(
-  { estudiante_id: 1, curso_id: 1, numero_modulo: 1 },
+  { student_id: 1, course_id: 1, module_number: 1 },
   { unique: true }
 );
 

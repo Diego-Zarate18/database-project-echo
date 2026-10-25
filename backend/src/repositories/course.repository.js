@@ -7,6 +7,10 @@ const Course = require('../models/course.model');
  * Patrón Repository para la colección "cursos".
  */
 const courseRepository = {
+  async findAll() {
+    return Course.find().sort({ createdAt: 1 });
+  },
+
   /**
    * Busca un curso por su ID.
    * @param {string} cursoId — ID del curso

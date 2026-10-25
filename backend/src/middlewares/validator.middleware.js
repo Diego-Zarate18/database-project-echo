@@ -10,10 +10,11 @@
  * Si pasa, reemplaza req.body con los datos sanitizados.
  *
  * @param {import('zod').ZodSchema} schema — Esquema Zod para validación
+ * @param {'body'|'params'} source — Parte de la petición que se valida
  * @returns {Function} Middleware de Express
  */
-const validate = (schema) => (req, res, next) => {
-  const result = schema.safeParse(req.body);
+const validate = (schema, source = 'body') => (req, res, next) => {
+  const result = schema.safeParse(req[source]);
 
   if (!result.success) {
     const errors = result.error.issues.map((issue) => ({
@@ -28,8 +29,8 @@ const validate = (schema) => (req, res, next) => {
     });
   }
 
-  // Reemplazar body con los datos sanitizados por Zod
-  req.body = result.data;
+  // Reemplazar la entrada con los datos sanitizados por Zod
+  req[source] = result.data;
   next();
 };
 

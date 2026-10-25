@@ -14,7 +14,7 @@ const evalService = new EvalService({
 });
 
 /**
- * Controlador para el endpoint POST /api/v1/evaluaciones/responder
+ * Controlador para el endpoint POST /api/evaluaciones/responder
  *
  * Recibe las respuestas del estudiante autenticado, las envía al servicio
  * de evaluación para calificación y retorna el resultado.

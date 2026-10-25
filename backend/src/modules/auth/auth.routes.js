@@ -29,10 +29,10 @@ const loginSchema = z.object({
     .min(1, 'La contrasena es obligatoria'),
 });
 
-// POST /api/v1/auth/register
+// POST /api/auth/register
 router.post('/register', validate(registerSchema), register);
 
-// POST /api/v1/auth/login
+// POST /api/auth/login
 router.post('/login', validate(loginSchema), login);
 
 module.exports = router;

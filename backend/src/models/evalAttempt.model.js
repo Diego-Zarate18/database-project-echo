@@ -8,15 +8,15 @@ const mongoose = require('mongoose');
  */
 const answerSchema = new mongoose.Schema(
   {
-    preguntaId: {
+    question_id: {
       type: String,
       required: true,
     },
-    respuesta_estudiante: {
+    student_answer: {
       type: String,
       required: true,
     },
-    es_correcta: {
+    is_correct: {
       type: Boolean,
       required: true,
     },
@@ -36,35 +36,35 @@ const answerSchema = new mongoose.Schema(
  */
 const evalAttemptSchema = new mongoose.Schema(
   {
-    estudiante_id: {
+    student_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Student',
       required: true,
     },
-    curso_id: {
+    course_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Course',
       required: true,
     },
-    numero_modulo: {
+    module_number: {
       type: Number,
       required: true,
     },
-    respuestas: {
+    answers: {
       type: [answerSchema],
       required: true,
     },
-    nota: {
+    score: {
       type: Number,
       required: true,
       min: 0,
       max: 100,
     },
-    aprobado: {
+    passed: {
       type: Boolean,
       required: true,
     },
-    numero_intento: {
+    attempt_number: {
       type: Number,
       required: true,
       min: 1,
@@ -72,12 +72,12 @@ const evalAttemptSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-    collection: 'intentos_evaluacion',
+    collection: 'evaluation_attempts',
   }
 );
 
 // Índice compuesto para consultas por estudiante y módulo
-evalAttemptSchema.index({ estudiante_id: 1, curso_id: 1, numero_modulo: 1 });
+evalAttemptSchema.index({ student_id: 1, course_id: 1, module_number: 1 });
 
 const EvalAttempt = mongoose.model('EvalAttempt', evalAttemptSchema);
 

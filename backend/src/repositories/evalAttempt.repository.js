@@ -29,9 +29,9 @@ const evalAttemptRepository = {
    */
   async countAttempts(estudianteId, cursoId, numeroModulo) {
     return EvalAttempt.countDocuments({
-      estudiante_id: estudianteId,
-      curso_id: cursoId,
-      numero_modulo: numeroModulo,
+      student_id: estudianteId,
+      course_id: cursoId,
+      module_number: numeroModulo,
     });
   },
 
@@ -46,9 +46,9 @@ const evalAttemptRepository = {
    */
   async findByStudentAndModule(estudianteId, cursoId, numeroModulo) {
     return EvalAttempt.find({
-      estudiante_id: estudianteId,
-      curso_id: cursoId,
-      numero_modulo: numeroModulo,
+      student_id: estudianteId,
+      course_id: cursoId,
+      module_number: numeroModulo,
     }).sort({ createdAt: -1 });
   },
 };

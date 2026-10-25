@@ -34,9 +34,9 @@ const authService = {
 
     // Crear el estudiante
     const estudiante = await studentRepository.create({
-      nombre,
-      correo_electronico,
-      contrasena_hash,
+      name: nombre,
+      email: correo_electronico,
+      password_hash: contrasena_hash,
     });
 
     // Generar JWT
@@ -45,8 +45,8 @@ const authService = {
     return {
       estudiante: {
         id: estudiante._id,
-        nombre: estudiante.nombre,
-        correo_electronico: estudiante.correo_electronico,
+        nombre: estudiante.name,
+        correo_electronico: estudiante.email,
       },
       token,
     };
@@ -67,7 +67,7 @@ const authService = {
     }
 
     // Verificar contrasena
-    const contrasenaValida = await bcrypt.compare(contrasena, estudiante.contrasena_hash);
+    const contrasenaValida = await bcrypt.compare(contrasena, estudiante.password_hash);
     if (!contrasenaValida) {
       throw new AppError('Credenciales invalidas.', 401);
     }
@@ -78,8 +78,8 @@ const authService = {
     return {
       estudiante: {
         id: estudiante._id,
-        nombre: estudiante.nombre,
-        correo_electronico: estudiante.correo_electronico,
+        nombre: estudiante.name,
+        correo_electronico: estudiante.email,
       },
       token,
     };
@@ -94,7 +94,7 @@ const authService = {
     return jwt.sign(
       {
         id: estudiante._id.toString(),
-        correo: estudiante.correo_electronico,
+        correo: estudiante.email,
       },
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN || '30m' }

@@ -24,9 +24,9 @@ const progressLogRepository = {
   async upsert(estudianteId, cursoId, numeroModulo, updateData) {
     return ProgressLog.findOneAndUpdate(
       {
-        estudiante_id: estudianteId,
-        curso_id: cursoId,
-        numero_modulo: numeroModulo,
+        student_id: estudianteId,
+        course_id: cursoId,
+        module_number: numeroModulo,
       },
       { $set: updateData },
       { upsert: true, new: true }
@@ -43,9 +43,9 @@ const progressLogRepository = {
    */
   async findByStudentAndModule(estudianteId, cursoId, numeroModulo) {
     return ProgressLog.findOne({
-      estudiante_id: estudianteId,
-      curso_id: cursoId,
-      numero_modulo: numeroModulo,
+      student_id: estudianteId,
+      course_id: cursoId,
+      module_number: numeroModulo,
     });
   },
 
@@ -58,8 +58,8 @@ const progressLogRepository = {
    */
   async findByStudentAndCourse(estudianteId, cursoId) {
     return ProgressLog.find({
-      estudiante_id: estudianteId,
-      curso_id: cursoId,
+      student_id: estudianteId,
+      course_id: cursoId,
     });
   },
 };

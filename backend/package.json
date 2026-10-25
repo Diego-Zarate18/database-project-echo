@@ -9,7 +9,8 @@
     "test": "jest --forceExit --detectOpenHandles --verbose",
     "test:unit": "jest tests/unit --verbose",
     "test:integration": "jest tests/integration --forceExit --detectOpenHandles --verbose",
-    "seed": "node src/scripts/seed.js"
+    "seed": "node src/scripts/seed.js",
+    "reset": "node src/scripts/reset.js"
   },
   "keywords": ["echo", "educacion", "evaluaciones", "nodejs", "express", "mongodb"],
   "license": "MIT",

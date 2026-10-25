@@ -4,6 +4,8 @@
 const express = require('express');
 const { securityMiddlewares } = require('./config/security');
 const { errorHandler } = require('./middlewares/error.middleware');
+const authRoutes = require('./modules/auth/auth.routes');
+const courseRoutes = require('./modules/courses/course.routes');
 const evalRoutes = require('./modules/evaluations/eval.routes');
 
 /**
@@ -26,12 +28,20 @@ const createApp = (options = {}) => {
   app.use(express.json({ limit: '1mb' }));
 
   // ─── Ruta de Salud ───
-  app.get('/api/v1/health', (req, res) => {
+  app.get('/api/health', (req, res) => {
+    res.json({ ok: true, mensaje: 'Echo Backend operativo', version: '2.0.0' });
+  });
+  app.get('/api/health', (req, res) => {
     res.json({ ok: true, mensaje: 'Echo Backend operativo', version: '2.0.0' });
   });
 
   // ─── Rutas de Módulos ───
-  app.use('/api/v1/evaluaciones', evalRoutes);
+  app.use('/api/auth', authRoutes);
+  app.use('/api/courses', courseRoutes);
+  app.use('/api/evaluaciones', evalRoutes);
+  app.use('/api/auth', authRoutes);
+  app.use('/api/courses', courseRoutes);
+  app.use('/api/evaluaciones', evalRoutes);
 
   // ─── Ruta 404 ───
   app.use((req, res) => {
