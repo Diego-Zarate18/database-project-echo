@@ -43,7 +43,7 @@ const submitEvalSchema = z.object({
  * 3. submitEvaluation — Ejecuta la lógica de negocio
  */
 router.post(
-  '/responder',
+  '/answer',
   authMiddleware,
   validate(submitEvalSchema),
   submitEvaluation

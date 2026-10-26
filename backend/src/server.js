@@ -26,11 +26,10 @@ const startServer = async () => {
     const port = parseInt(env.PORT, 10);
 
     app.listen(port, () => {
-      console.log(`🚀 Echo Backend v2.0.0 corriendo en http://localhost:${port}`);
-      console.log(`📦 Entorno: ${env.NODE_ENV}`);
+      console.log(`Echo Backend corriendo en http://localhost:${port}`);
     });
   } catch (error) {
-    console.error('❌ Error fatal al iniciar el servidor:', error.message);
+    console.error('Error fatal al iniciar el servidor:', error.message);
     process.exit(1);
   }
 };

@@ -38,10 +38,10 @@ const createApp = (options = {}) => {
   // ─── Rutas de Módulos ───
   app.use('/api/auth', authRoutes);
   app.use('/api/courses', courseRoutes);
-  app.use('/api/evaluaciones', evalRoutes);
+  app.use('/api/evaluations', evalRoutes);
   app.use('/api/auth', authRoutes);
   app.use('/api/courses', courseRoutes);
-  app.use('/api/evaluaciones', evalRoutes);
+  app.use('/api/evaluations', evalRoutes);
 
   // ─── Ruta 404 ───
   app.use((req, res) => {
